@@ -181,7 +181,6 @@ FILE *create_config_file(const char *conf_filename);
 bool flush_config_file(FILE *f, const char *conf_filename);
 
 /* Shared parser functions */
-void check_caidtab_fn(const char *token, char *value, void *setting, FILE *f);
 void caidvaluetab_fn(const char *token, char *value, void *setting, FILE *f);
 void cacheex_valuetab_fn(const char *token, char *value, void *setting, FILE *f);
 void cacheex_hitvaluetab_fn(const char *token, char *value, void *setting, FILE *f);
@@ -190,19 +189,6 @@ void group_fn(const char *token, char *value, void *setting, FILE *f);
 void services_fn(const char *token, char *value, void *setting, FILE *f);
 void chk_ftab_fn(const char *token, char *value, void *setting, FILE *f);
 
-enum ftab_fn
-{
-	FTAB_ACCOUNT               = 0x01,
-	FTAB_READER                = 0x02,
-	FTAB_PROVID                = 0x04,
-	FTAB_CHID                  = 0x08,
-	FTAB_FBPCAID               = 0x10,
-	FTAB_LOCALCARDS            = 0x20,
-	FTAB_IGNCHKSMCAID          = 0x40,
-	FTAB_IGNCRCCEX4USERONLYFOR = 0x80,
-	FTAB_EMUAU                 = 0x100,
-	FTAB_CCCGBXRESHARE         = 0x200
-};
 
 void ftab_fn(const char *token, char *value, void *setting, long ftab_type, FILE *f);
 void * read_cccamcfg(int32_t mode);
