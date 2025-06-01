@@ -447,13 +447,8 @@ static void write_versionfile(bool use_stdout)
 	write_conf(CW_CYCLE_CHECK, "CW Cycle Check support");
 	write_conf(LCDSUPPORT, "LCD support");
 	write_conf(LEDSUPPORT, "LED support");
-	switch (cs_getclocktype())
-	{
-		case CLOCK_TYPE_UNKNOWN  : write_conf(CLOCKFIX, "Clockfix with UNKNOWN clock"); break;
-		case CLOCK_TYPE_REALTIME : write_conf(CLOCKFIX, "Clockfix with realtime clock"); break;
-		case CLOCK_TYPE_MONOTONIC: write_conf(CLOCKFIX, "Clockfix with monotonic clock"); break;
-	}
 	write_conf(IPV6SUPPORT, "IPv6 support");
+	write_conf(WITH_CARDLIST, "Cardlist support");
 #if defined(__arm__) || defined(__aarch64__)
 	write_conf(WITH_ARM_NEON, "ARM NEON (SIMD/MPE) support");
 #endif

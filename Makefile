@@ -42,11 +42,6 @@ LIB_PTHREAD = -lpthread
 LIB_DL = -ldl
 
 LIB_RT :=
-ifeq ($(uname_S),Linux)
-	ifeq "$(shell ./config.sh --enabled CLOCKFIX)" "Y"
-		LIB_RT := -lrt
-	endif
-endif
 ifeq ($(uname_S),FreeBSD)
 	LIB_DL :=
 endif
@@ -85,7 +80,7 @@ else
 	CC_OPTS = -O2 -ggdb -pipe -ffunction-sections -fdata-sections -fomit-frame-pointer -fno-schedule-insns
 endif
 
-LDFLAGS = -Wl,--gc-sections
+LDFLAGS += -Wl,--gc-sections
 
 # Enable sse2 on x86, neon on arm
 TARGETHELP := $(shell $(CC) --target-help 2>&1)
@@ -233,7 +228,7 @@ else
 endif
 
 ifeq ($(uname_S),Cygwin)
-	DEFAULT_PCSC_LIB += -lwinscard
+	DEFAULT_PCSC_LIB = -lwinscard
 endif
 
 # Function to initialize USE related variables
@@ -345,6 +340,7 @@ SRC-$(CONFIG_LIB_MDC2) += cscrypt/mdc2.c
 SRC-$(CONFIG_LIB_FAST_AES) += cscrypt/fast_aes.c
 SRC-$(CONFIG_LIB_SHA256) += cscrypt/sha256.c
 
+SRC-$(CONFIG_WITH_CARDLIST) += cardlist.c
 SRC-$(CONFIG_WITH_CARDREADER) += csctapi/atr.c
 SRC-$(CONFIG_WITH_CARDREADER) += csctapi/icc_async.c
 SRC-$(CONFIG_WITH_CARDREADER) += csctapi/io_serial.c

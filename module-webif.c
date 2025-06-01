@@ -6703,7 +6703,7 @@ static char *send_oscam_status(struct templatevars * vars, struct uriparams * pa
 	tpl_addVar(vars, TPLADD, "DISPLAYREADERINFO", cfg.http_showreaderinfo ? "visible" : "hidden");
 	tpl_addVar(vars, TPLADD, "DISPLAYLOADINFO", cfg.http_showloadinfo ?"visible" : "hidden");
 	tpl_addVar(vars, TPLADD, "DISPLAYECMINFO", cfg.http_showecminfo ? "visible" : "hidden");
-	tpl_addVar(vars, TPLADD, "DISPLAYECMINFO_READERS", cfg.http_showecminfo ? "visible" : "hidden");
+	tpl_addVar(vars, TPLADD, "DISPLAYECMINFO_READERS", cfg.http_showreaderinfo ? "visible" : "hidden");
 
 	if(cfg.http_showcacheexinfo == 1 && config_enabled(CS_CACHEEX))
 	{

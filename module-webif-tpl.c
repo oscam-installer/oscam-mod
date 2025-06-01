@@ -417,7 +417,6 @@ char *tpl_getUnparsedTpl(const char *name, int8_t removeHeader, const char *subd
 											check_conf(WITH_EXTENDED_CW, ptr2);
 											check_conf(WITH_NEUTRINO, ptr2);
 											check_conf(READ_SDT_CHARSETS, ptr2);
-											check_conf(CLOCKFIX, ptr2);
 											check_conf(IPV6SUPPORT, ptr2);
 											check_conf(LCDSUPPORT, ptr2);
 											check_conf(LEDSUPPORT, ptr2);
