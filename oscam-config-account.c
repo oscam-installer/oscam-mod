@@ -11,6 +11,7 @@
 #include "oscam-garbage.h"
 #include "oscam-lock.h"
 #include "oscam-string.h"
+#include "oscam-config-null.h"
 #ifdef CS_CACHEEX_AIO
 #include "module-cacheex.h"
 #endif
@@ -547,9 +548,16 @@ void account_set_defaults(struct s_auth *account)
 
 struct s_auth *init_userdb(void)
 {
+	tmp_conf=0;
 	FILE *fp = open_config_file(cs_user);
 	if(!fp)
-		{ return NULL; }
+	{
+		fp = conf_file(cs_user);
+		if(!fp)
+		{
+			return NULL;
+		}
+	}
 
 	struct s_auth *authptr = NULL;
 	int32_t tag = 0, nr = 0, expired = 0, disabled = 0;

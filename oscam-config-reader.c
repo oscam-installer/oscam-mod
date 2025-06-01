@@ -12,6 +12,8 @@
 #include "oscam-lock.h"
 #include "oscam-reader.h"
 #include "oscam-string.h"
+#include "oscam-config-null.h"
+#include <unistd.h>
 #ifdef MODULE_GBOX
 #include "module-gbox.h"
 #endif
@@ -1393,10 +1395,15 @@ void reader_set_defaults(struct s_reader *rdr)
 int32_t init_readerdb(void)
 {
 	configured_readers = ll_create("configured_readers");
-
+	tmp_conf=0;
 	FILE *fp = open_config_file(cs_srvr);
 	if(!fp)
-		{ return 1; }
+	{
+		fp = conf_file(cs_srvr);
+		if (!fp){
+			return 1;
+		}
+	}
 
 	int32_t tag = 0;
 	char *value, *token;
@@ -1448,7 +1455,11 @@ int32_t init_readerdb(void)
 		reader_fixups_fn(rdr);
 		module_reader_set(rdr);
 	}
+	if ( tmp_conf == 1 ){
+		fclose(fp);
+	} else {
 	fclose(fp);
+	}	
 	return (0);
 }
 
