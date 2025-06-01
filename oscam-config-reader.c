@@ -1896,7 +1896,6 @@ static const struct config_list reader_opts[] =
 
 	DEF_OPT_INT8("cak7_mode"                      , OFS(cak7_mode),                       0),
 	DEF_OPT_FUNC_X("ins42"                        , OFS(ins42),                           ins42_fn, SIZEOF(ins42)),
-	DEF_OPT_FUNC_X("ins2e06"                      , OFS(ins2e06),                         ins7E_fn, SIZEOF(ins2e06)),
 	DEF_OPT_FUNC("k1_generic"                     , OFS(k1_generic),                      des_and_3des_key_fn),
 	DEF_OPT_FUNC("k1_unique"                      , OFS(k1_unique),                       des_and_3des_key_fn),
 	DEF_OPT_INT8("fix07"                          , OFS(fix_07),                          1),
