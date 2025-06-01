@@ -297,7 +297,7 @@ int32_t ICC_Async_Activate(struct s_reader *reader, ATR *atr, uint16_t deprecate
 	{
 		reader->crdr_flush = crdr_ops->flush; // Flush flag may be changed for each reader
 		call(crdr_ops->activate(reader, atr));
-		if((crdr_ops->skip_extra_atr_parsing) && (reader->cak7_mode == 0))
+		if((crdr_ops->skip_extra_atr_parsing)
 		{
 			return OK;
 		}
@@ -358,7 +358,7 @@ int32_t ICC_Async_Activate(struct s_reader *reader, ATR *atr, uint16_t deprecate
 		// Parse_ATR and InitCard need to be included in lock because they change parity of serial port
 		if(crdr_ops->lock)
 		{
-			crdr_ops->lock(reader);
+		crdr_ops->lock(reader);
 		}
 		int32_t ret1 = Parse_ATR(reader, atr, deprecated);
 		if(crdr_ops->unlock)
@@ -376,14 +376,7 @@ int32_t ICC_Async_Activate(struct s_reader *reader, ATR *atr, uint16_t deprecate
 	{
 		rdr_log(reader, "detected card in CAK7 mode");
 		calculate_cak7_vars(reader, atr);
-		if((atrarr[2] == 0x95) && (atrarr[3] == 0x00) && (atrarr[4] == 0xFF) && (atrarr[5] == 0x50) && (atrarr[6] == 0x80) && (atrarr[7] == 0x1C))
-		{
-			reader->cak7type = 3;
-		}
-		else
-		{
-			reader->cak7type = 1;
-		}
+		reader->cak7type = 1;
 	}
 	else if(((memcmp(atrarr + 7, "pp", 2) == 0 && ((atrarr[9]&0x0F) >= 10)) || (memcmp(atrarr + 11, "DNASP18", 7) == 0) || (memcmp(atrarr + 11, "DNASP19", 7) == 0) || (memcmp(atrarr + 11, "DNASP1A", 7) == 0)) && reader->cak7_mode)
 	{

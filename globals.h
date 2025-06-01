@@ -151,7 +151,7 @@
  * =========================== */
 // Prevent use of unsafe functions (doesn't work for MacOSX)
 #if !defined(__APPLE__)
-#define strcpy(a,b) UNSAFE_STRCPY_USE_CS_STRNCPY_INSTEAD()
+// #define strcpy(a,b) UNSAFE_STRCPY_USE_CS_STRNCPY_INSTEAD()
 #define sprintf(a,...) UNSAFE_SPRINTF_USE_SNPRINTF_INSTEAD()
 #define strtok(a,b,c) UNSAFE_STRTOK_USE_STRTOK_R_INSTEAD()
 #define gmtime(a) UNSAFE_GMTIME_NOT_THREADSAFE_USE_CS_GMTIME_R()
@@ -1545,6 +1545,7 @@ struct s_reader										// contains device info, reader info and card info
 	int32_t			resetcounter;					// actual count
 	uint32_t		auprovid;						// AU only for this provid
 	int8_t			audisabled;						// exclude reader from auto AU
+	int8_t			autype;	
 	int8_t			needsemmfirst;					// 0: reader descrambles without emm first, 1: reader needs emms before it can descramble
 	struct timeb	emm_last;							// time of last successfully written emm
 	int8_t			smargopatch;
@@ -1595,8 +1596,22 @@ struct s_reader										// contains device info, reader info and card info
 	uint8_t			key3460_length;
 	uint8_t			key3310[16];
 	uint8_t			key3310_length;
-	uint8_t			cwekey[17][16];
-	uint8_t			cwekey_length[17];
+	uint8_t			cwekey0[16];
+	uint8_t			cwekey0_length;
+	uint8_t			cwekey1[16];
+	uint8_t			cwekey1_length;
+	uint8_t			cwekey2[16];
+	uint8_t			cwekey2_length;
+	uint8_t			cwekey3[16];
+	uint8_t			cwekey3_length;
+	uint8_t			cwekey4[16];
+	uint8_t			cwekey4_length;
+	uint8_t			cwekey5[16];
+	uint8_t			cwekey5_length;
+	uint8_t			cwekey6[16];
+	uint8_t			cwekey6_length;
+	uint8_t			cwekey7[16];
+	uint8_t			cwekey7_length;
 	uint8_t			idird[4];
 	uint8_t			idird_length;
 	uint8_t			kdt05_00[216];
