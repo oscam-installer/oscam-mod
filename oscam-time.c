@@ -362,15 +362,4 @@ void cs_gettime(struct timespec *ts)
 	ts->tv_nsec = tv.tv_usec * 1000;
 	clock_type = CLOCK_TYPE_REALTIME;
 	return;
-#elif defined (__MACH__)
-// OS X does not have clock_gettime, use clock_get_time
-	clock_serv_t cclock;
-	mach_timespec_t mts;
-	host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
-	clock_get_time(cclock, &mts);
-	mach_port_deallocate(mach_task_self(), cclock);
-	ts->tv_sec = mts.tv_sec;
-	ts->tv_nsec = mts.tv_nsec;
-	clock_type = CLOCK_TYPE_REALTIME;
-	return;
 }
