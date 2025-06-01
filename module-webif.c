@@ -2735,17 +2735,26 @@ static char *send_oscam_reader_config(struct templatevars *vars, struct uriparam
 #endif
 
 	// RSA Key
-	for(i = 0; i < rdr->rsa_mod_length; i++)
-		{ tpl_printf(vars, TPLAPPEND, "RSAKEY", "%02X", rdr->rsa_mod[i]); }
+	int32_t len = rdr->rsa_mod_length;
+	if(len > 0)
+	{
+		for(i = 0; i < len; i++) { tpl_printf(vars, TPLAPPEND, "RSAKEY", "%02X", rdr->rsa_mod[i]); }
+	}
 
 	// 3DES Key
-	for(i = 0; i < rdr->des_key_length; i++)
-		{ tpl_printf(vars, TPLAPPEND, "DESKEY", "%02X", rdr->des_key[i]); }
+	len = rdr->des_key_length;
+	if(len > 0)
+	{
+		for(i = 0; i < len; i++) { tpl_printf(vars, TPLAPPEND, "DESKEY", "%02X", rdr->des_key[i]); }
+	}
 
 	// BoxKey
-	for(i = 0; i < rdr->boxkey_length ; i++)
-		{ tpl_printf(vars, TPLAPPEND, "BOXKEY", "%02X", rdr->boxkey[i]); }
-
+	len = rdr->boxkey_length;
+	if(len > 0)
+	{
+		for(i = 0; i < len ; i++)
+			{ tpl_printf(vars, TPLAPPEND, "BOXKEY", "%02X", rdr->boxkey[i]); }
+	}
 #ifdef READER_CONAX
 	// CWPK Key
 	len = rdr->cwpk_mod_length;
@@ -2766,7 +2775,6 @@ static char *send_oscam_reader_config(struct templatevars *vars, struct uriparam
 #endif
 
 #ifdef READER_NAGRA_MERLIN
-	int32_t j;
 
 	// idird (CAK7)
 	len = rdr->idird_length;
