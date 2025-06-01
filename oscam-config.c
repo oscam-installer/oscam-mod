@@ -1543,7 +1543,7 @@ int32_t chk_cccam_cfg_F_more(char *line,struct s_auth * account)
 			cno=0;
 			while((p2=strtok_r(sline,",",&optr))){
 				dno=0;
-				uint16_t caid=0,srvid=0;
+				uint16_t srvid=0;
 				uint32_t provid=0;
 //				cs_debug_mask(D_TRACE,"CHILD:%s",p2);
 				while((p3=strtok_r(p2,":",&iptr))){
@@ -1635,7 +1635,7 @@ void * read_cccamcfg(int32_t mode)
 	char typ;
 	static int32_t readed_cccamcfg=0;
 	int32_t port,ret;
-	int32_t caid,prid;
+	int32_t prid;
 
 	if(!readed_cccamcfg)
 		cs_log("load CCcam config file: %s", cfg.cc_cfgfile);
