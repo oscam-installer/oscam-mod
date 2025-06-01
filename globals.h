@@ -368,11 +368,11 @@
 /* ===========================
  *			constants
  * =========================== */
-#define SCM_URL					"https://git.streamboard.tv/common/oscam"
+#define SCM_URL					"https://github.com/oscam-installer/oscam-mod"
 #define WIKI_URL				"https://wiki.streamboard.tv/wiki"
 #define BOARD_URL				"https://board.streamboard.tv"
 #ifndef CS_VERSION
-#define CS_VERSION				"2.25.05-11884"
+#define CS_VERSION				"2.25.05-11884-smod"
 #endif
 #ifndef CS_GIT_COMMIT
 #define CS_GIT_COMMIT			"a2b4c6d8"
@@ -383,7 +383,7 @@
 #endif
 #endif
 #ifndef CS_TARGET
-# define CS_TARGET				"unknown"
+# define CS_TARGET				"smod"
 #endif
 #ifndef CS_CONFDIR
 #define CS_CONFDIR				"/usr/local/etc"
