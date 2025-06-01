@@ -876,10 +876,14 @@ static const struct config_list cccam_opts[] =
 	DEF_OPT_INT8("minimizecards"      , OFS(cc_minimize_cards)     , 0),
 	DEF_OPT_INT8("keepconnected"      , OFS(cc_keep_connected)     , 1),
 	DEF_OPT_UINT32("recv_timeout"     , OFS(cc_recv_timeout)       , DEFAULT_CC_RECV_TIMEOUT),
+	DEF_OPT_STR("cccfgfile"           , OFS(cc_cfgfile)            , NULL),	
 	DEF_LAST_OPT
 };
 #else
-static const struct config_list cccam_opts[] = { DEF_LAST_OPT };
+static const struct config_list cccam_opts[] = {
+	DEF_OPT_STR("cccfgfile"           , OFS(cc_cfgfile)            , NULL),
+	DEF_LAST_OPT
+};
 #endif
 
 #ifdef MODULE_PANDORA

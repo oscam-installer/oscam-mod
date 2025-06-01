@@ -1234,6 +1234,7 @@ static const struct config_list reader_opts[] =
 	DEF_OPT_INT8("cccreshare"                     , OFS(cc_reshare),                      DEFAULT_CC_RESHARE),
 	DEF_OPT_INT32("cccreconnect"                  , OFS(cc_reconnect),                    DEFAULT_CC_RECONNECT),
 	DEF_OPT_INT8("ccchop"                         , OFS(cc_hop),                          0),
+	DEF_OPT_INT8("ccckeepaliveping"               , OFS(cc_keepaliveping),                30),	
 #endif
 #ifdef MODULE_GHTTP
 	DEF_OPT_UINT8("use_ssl"                       , OFS(ghttp_use_ssl),                   0),
@@ -1341,7 +1342,7 @@ static bool reader_check_setting(const struct config_list *UNUSED(clist), void *
 	static const char *cccam_settings[] =
 	{
 		"cccversion", "cccmaxhops", "cccmindown", "ccckeepalive",
-		"cccreconnect",
+		"cccreconnect", "ccckeepaliveping",
 		0
 	};
 	// Special settings for CCCAM
@@ -1411,6 +1412,12 @@ int32_t init_readerdb(void)
 	if(!cs_malloc(&token, MAXLINESIZE))
 		{ return 1; }
 
+	if(!configured_readers)
+		configured_readers = ll_create("configured_readers");
+
+	if(cfg.cc_cfgfile)
+		read_cccamcfg(CCCAMCFGREADER);
+
 	struct s_reader *rdr;
 	if(!cs_malloc(&rdr, sizeof(struct s_reader)))
 	{
@@ -1450,16 +1457,28 @@ int32_t init_readerdb(void)
 	}
 	NULLFREE(token);
 	LL_ITER itr = ll_iter_create(configured_readers);
-	while((rdr = ll_iter_next(&itr))) // build active readers list
+	while((rdr = ll_iter_next(&itr)) && rdr->from_cccam_cfg)   //free duplicate reader
+	{
+		struct s_reader *rdr2;
+		LL_ITER iter = ll_iter_create(configured_readers);
+		while((rdr2 = ll_iter_next(&iter))){
+			if(rdr != rdr2 && !strcmp(rdr->device, rdr2->device)
+			   && rdr->r_port == rdr2->r_port && !strcmp(rdr->r_usr,rdr2->r_usr)
+			   && !strcmp(rdr->r_pwd, rdr2->r_pwd)){
+				rdr = ll_iter_remove(&itr);
+				free_reader(rdr);
+				break;
+			}
+		}
+	}
+
+	itr = ll_iter_create(configured_readers);
+	while((rdr = ll_iter_next(&itr)))   //build active readers list
 	{
 		reader_fixups_fn(rdr);
 		module_reader_set(rdr);
 	}
-	if ( tmp_conf == 1 ){
-		fclose(fp);
-	} else {
 	fclose(fp);
-	}	
 	return (0);
 }
 

@@ -67,6 +67,6 @@ enum ftab_fn
 	FTAB_CCCGBXRESHARE         = 0x200
 };
 
-void ftab_fn(const char *token, char *value, void *setting, long ftab_type, FILE *f);
+void * read_cccamcfg(int32_t mode);
 
 #endif

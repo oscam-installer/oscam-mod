@@ -1758,10 +1758,12 @@ struct s_reader										// contains device info, reader info and card info
 	int8_t			cc_mindown;						// cccam min downhops
 	uint32_t		cc_id;
 	int8_t			cc_keepalive;
+	int8_t			cc_keepaliveping;				// Keep Alive Ping - interval to send keepalives if idle.	
 	int8_t			cc_hop;							// For non-cccam reader: hop for virtual cards
 	int8_t			cc_reshare;
 	int32_t			cc_reconnect;					// reconnect on ecm-request timeout
 #endif
+	int8_t			from_cccam_cfg;					// created from cccam.cfg
 	int8_t			tcp_connected;
 	int32_t			tcp_ito;						// inactivity timeout
 	int32_t			tcp_rto;						// reconnect timeout
@@ -2303,6 +2305,7 @@ struct s_config
 	uint8_t			cc_fixed_nodeid[8];
 	uint32_t		cc_recv_timeout;				// The poll() timeout parameter in ms. Default: DEFAULT_CC_RECV_TIMEOUT (2000 ms).
 #endif
+	char			*cc_cfgfile;					// CCcam.cfg file path
 #ifdef MODULE_GBOX
 	#define			GBOX_MY_VERS_DEF		0x2A
 	#define			GBOX_MY_CPU_API_DEF	0x61

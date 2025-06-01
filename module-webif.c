@@ -137,8 +137,9 @@ static bool use_srvid2 = false;
 #define MNU_GBX_FSTAINF     27
 #define MNU_GBX_FEXPINF     28
 #define MNU_GBX_INFOLOG     29
+#define MNU_CFG_CCCAMCFG    30
 
-#define MNU_CFG_TOTAL_ITEMS 30 // sum of items above. Use it for "All inactive" in function calls too.
+#define MNU_CFG_TOTAL_ITEMS 31 // sum of items above. Use it for "All inactive" in function calls too.
 
 static void set_status_info_var(struct templatevars *vars, char *varname, int no_data, char *fmt, double value)
 {
@@ -1415,6 +1416,9 @@ static char *send_oscam_config_cccam(struct templatevars *vars, struct uriparams
 	tpl_printf(vars, TPLADD, "RECV_TIMEOUT", "%u", cfg.cc_recv_timeout);
 
 	tpl_addVar(vars, TPLADD, "STEALTH", (cfg.cc_stealth == 1) ? "checked" : "");
+
+	if (cfg.cc_cfgfile)
+		tpl_printf(vars, TPLADD, "CCCFGFILE", "%s", cfg.cc_cfgfile);
 
 	tpl_printf(vars, TPLADD, "NODEID", "%02X%02X%02X%02X%02X%02X%02X%02X",
 			   cfg.cc_fixed_nodeid[0], cfg.cc_fixed_nodeid[1], cfg.cc_fixed_nodeid[2], cfg.cc_fixed_nodeid[3],
@@ -3214,6 +3218,7 @@ static char *send_oscam_reader_config(struct templatevars *vars, struct uriparam
 	tpl_printf(vars, TPLADD, "CCCRESHARE",   "%d", rdr->cc_reshare);
 	tpl_printf(vars, TPLADD, "RESHARE",      "%d", cfg.cc_reshare);
 	tpl_printf(vars, TPLADD, "CCCRECONNECT", "%d", rdr->cc_reconnect);
+	tpl_printf(vars, TPLADD, "CCCKEEPALIVEPING",   "%d", rdr->cc_keepaliveping);	
 
 	if(rdr->cc_keepalive)
 		{ tpl_addVar(vars, TPLADD, "KEEPALIVECHECKED", "checked"); }
@@ -4158,11 +4163,17 @@ static void webif_add_client_proto(struct templatevars *vars, struct s_client *c
 		struct cc_data *cc = cl->cc;
 		if(cc && *cc->remote_version && *cc->remote_build)
 		{
-			tpl_printf(vars, TPLADD, "CLIENTPROTO", "%s (%s-%s)", proto, cc->remote_version, cc->remote_build);
-			tpl_printf(vars, TPLADD, "CLIENTPROTOSORT", "%s (%s-%s)", proto, cc->remote_version, cc->remote_build);
+			uint8_t mcs_ver = 0;
+			if (cc->multics_version[0] | (cc->multics_version[1] << 8))
+			{
+				mcs_ver = cc->multics_version[0] | (cc->multics_version[1] << 8);
+			}
+
+			tpl_printf(vars, TPLADD, "CLIENTPROTO", "%s (%s-%s)", (char *)proto, cc->remote_version, cc->remote_build);
+			tpl_printf(vars, TPLADD, "CLIENTPROTOSORT", "%s (%s-%s)", (char *)proto, cc->remote_version, cc->remote_build);
 			if(cccam_client_multics_mode(cl))
 			{
-				tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%d", cc->multics_version[0] | (cc->multics_version[1] << 8));
+				tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%d", mcs_ver);
 			}
 			else
 			{
@@ -4216,31 +4227,31 @@ static void webif_add_client_proto(struct templatevars *vars, struct s_client *c
 				switch(is_other_proto)
 				{
 					case 1:
-						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_r_%d", proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
+						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_r_%d", (char *)proto, mcs_ver);
 						if(picon_exists(picon_name))
 						{
 							if (!apicall)
 							{
 								tpl_addVar(vars, TPLADD, "CCA", (char *)proto);
 								tpl_addVar(vars, TPLADD, "CCB", "r");
-								tpl_printf(vars, TPLADD, "CCC", "%d", cc->multics_version[0] | (cc->multics_version[1] << 8));
+								tpl_printf(vars, TPLADD, "CCC", "%d", mcs_ver);
 								tpl_addVar(vars, TPLADD, "CCD", "");
 								tpl_addVar(vars, TPLADD, "CLIENTPROTO", tpl_getTpl(vars, "PROTOCCCAMPIC"));
 							}
 							else
 							{
-								tpl_printf(vars, TPLADDONCE, "PROTOICON", "%s_r_%d",(char *)proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
+								tpl_printf(vars, TPLADDONCE, "PROTOICON", "%s_r_%d",(char *)proto, mcs_ver);
 							}
 						}
 						else
 						{
 							tpl_printf(vars, TPLADD, "CLIENTPROTOTITLE", "Multics, revision r%d missing icon: IC_%s_r_%d.tpl",
-								cc->multics_version[0] | (cc->multics_version[1] << 8), proto, cc->multics_version[0] | (cc->multics_version[1] << 8));
+								 mcs_ver, (char *)proto, mcs_ver);
 						}
 						break;
 
 					default:
-						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_%s_%s", proto, cc->remote_version, cc->remote_build);
+						snprintf(picon_name, sizeof(picon_name) / sizeof(char) - 1, "%s_%s_%s", (char *)proto, cc->remote_version, cc->remote_build);
 						if(picon_exists(picon_name))
 						{
 							if (!apicall)
@@ -7371,6 +7382,7 @@ static char *send_oscam_files(struct templatevars * vars, struct uriparams * par
 		{ "expired.info",    MNU_GBX_FEXPINF,   FTYPE_GBOX },     // id 28
 		{ "info.log",        MNU_GBX_INFOLOG,   FTYPE_GBOX },     // id 29
 #endif
+		{ "CCcam.cfg",       MNU_CFG_CCCAMCFG,  FTYPE_CONFIG },   // id 30
 		{ NULL, 0, 0 },
 	};
 
