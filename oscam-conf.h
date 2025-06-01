@@ -181,15 +181,6 @@ FILE *create_config_file(const char *conf_filename);
 bool flush_config_file(FILE *f, const char *conf_filename);
 
 /* Shared parser functions */
-void caidvaluetab_fn(const char *token, char *value, void *setting, FILE *f);
-void cacheex_valuetab_fn(const char *token, char *value, void *setting, FILE *f);
-void cacheex_hitvaluetab_fn(const char *token, char *value, void *setting, FILE *f);
-void class_fn(const char *token, char *value, void *setting, FILE *f);
-void group_fn(const char *token, char *value, void *setting, FILE *f);
-void services_fn(const char *token, char *value, void *setting, FILE *f);
-void chk_ftab_fn(const char *token, char *value, void *setting, FILE *f);
-
 
 void ftab_fn(const char *token, char *value, void *setting, long ftab_type, FILE *f);
-void * read_cccamcfg(int32_t mode);
 #endif
