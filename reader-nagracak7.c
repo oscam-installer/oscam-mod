@@ -1244,7 +1244,7 @@ static int32_t CAK7_GetCamKey(struct s_reader *reader)
 	{
 		memcpy(cmd0e + 132, reader->nuid, reader->nuid_length); // inject NUID
 
-                uint8_t cwekeycount = 0;
+                uint8_t cwekey0count = 0;
 
                 if(reader->cwekey0_length)
                         { cwekeycount++; }
@@ -1263,7 +1263,7 @@ static int32_t CAK7_GetCamKey(struct s_reader *reader)
                 if(reader->cwekey7_length)
                         { cwekeycount++; }
 
-                if(cwekeycount == 0)
+                if(cwekey0count == 0)
                 {
                         rdr_log(reader, "only NUID defined - enter at least CWPK0");
                         return ERROR;
@@ -1815,24 +1815,19 @@ static int32_t nagra3_do_ecm(struct s_reader *reader, const ECM_REQUEST *er, str
 
 		if(cta_res[27] == 0x5C)
 		{
-			uint8_t cta_res144 = cta_res[144];
-			if(cta_res144 < 0x11)
+			if(!reader->cwekey0_length)
 			{
-				if(!reader->cwekey0_length[cta_res144])
-				{
-					rdr_log(reader, "ERROR: CWPK%d is not set, can not decrypt CW", cta_res[144]);
-					return ERROR;
-				}
-				des_ecb3_decrypt(_cwe0, reader->cwekey[cta_res144]);
-				des_ecb3_decrypt(_cwe1, reader->cwekey[cta_res144]);
-				rdr_log_dbg(reader, D_READER, "CW Decrypt ok");
+				rdr_log(reader, "ERROR: CWPK is not set, can not decrypt CW");
+				return ERROR;
 			}
+
+			des_ecb3_decrypt(_cwe0, reader->cwekey0);
+			des_ecb3_decrypt(_cwe1, reader->cwekey0);
 		}
 		else if(cta_res[27] == 0x58)
 		{
 			des_ecb3_decrypt(_cwe0, reader->key3des);
 			des_ecb3_decrypt(_cwe1, reader->key3des);
-			rdr_log_dbg(reader, D_READER, "CW Decrypt ok");
 		}
 
 		memcpy(ea->cw, _cwe0, 0x08);
