@@ -1247,21 +1247,21 @@ static int32_t CAK7_GetCamKey(struct s_reader *reader)
                 uint8_t cwekey0count = 0;
 
                 if(reader->cwekey0_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey1_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey2_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey3_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey4_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey5_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey6_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
                 if(reader->cwekey7_length)
-                        { cwekeycount++; }
+                        { cwekey0count++; }
 
                 if(cwekey0count == 0)
                 {
@@ -1277,7 +1277,7 @@ static int32_t CAK7_GetCamKey(struct s_reader *reader)
 			else
 			{
 				cmd0e[136] = 0x00;
-				cmd0e[137] = !reader->cwpkota ? cwekeycount : 0x00;
+				cmd0e[137] = !reader->cwpkota ? cwekey0count : 0x00;
 			}
 			if(reader->otacsc_length)
 			{
@@ -1286,7 +1286,7 @@ static int32_t CAK7_GetCamKey(struct s_reader *reader)
 			else
 			{
 				cmd0e[138] = 0x00;
-				cmd0e[139] = reader->cwpkota ? cwekeycount : 0x00;
+				cmd0e[139] = reader->cwpkota ? cwekey0count : 0x00;
 			}
 		}
 		char tmp[16];
