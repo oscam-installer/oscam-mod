@@ -1,6 +1,5 @@
 This variant of oscam combines the benefits of
 ==============================================
-- Base 11884
   
 - the original oscam-trunk https://git.streamboard.tv/common/oscam.git
 
