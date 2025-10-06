@@ -370,14 +370,8 @@ static int32_t ParseDataType(struct s_reader *reader, uint8_t dt, uint8_t *cta_r
 				uint32_t expire_date;
 
 				start_date = 1;
-				if(reader->caid == 0x186D)
-				{
-					expire_date = b2i(0x04, timestamp186D);
-				}
-				else
-				{
-					expire_date = b2i(0x04, cta_res + 22);
-				}
+				expire_date = b2i(0x04, cta_res + 22);
+
 				cs_add_entitlement(reader, reader->caid, id, chid, 0, tier_date(start_date, ds, 11), tier_date(expire_date, de, 11), 4, 1);
 				rdr_log(reader, "|%04X|%04X    |%s  |%s  |", id, chid, ds, de);
 				addProvider(reader, cta_res + 19);
