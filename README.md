@@ -9,3 +9,4 @@ This variant of oscam combines the benefits of
 License
 -------
 Licensed under the GNU General Public License, Version 2.0
+
