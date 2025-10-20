@@ -524,10 +524,10 @@ static int32_t ParseDataType(struct s_reader *reader, uint8_t dt, uint8_t *cta_r
 			if((cta_lr >= 0x30) && (chid = b2i(0x02, cta_res + 23)))
 			{
 				uint32_t id = b2i(0x02, cta_res + 19);
-				uint32_t start_date;
+				uint32_t start_date = 0;
 				uint32_t expire_date1;
 				uint32_t expire_date2;
-				uint32_t expire_date;
+				uint32_t expire_date = 0;
 
 				switch(reader->caid)
 				{
@@ -624,15 +624,7 @@ static int32_t ParseDataType(struct s_reader *reader, uint8_t dt, uint8_t *cta_r
 						expire_date = 0xAD0E2601;
 				}
 
-				cs_add_entitlement(reader,
-					reader->caid,
-					id,
-					chid,
-					0,
-					tier_date(start_date, ds, 11),
-					tier_date(expire_date, de, 11),
-					4,
-					1);
+				cs_add_entitlement(reader, reader->caid, id, chid, 0, tier_date(start_date, ds, 11), tier_date(expire_date, de, 11), 4, 1);
 				rdr_log(reader, "|%04X|%04X    |%s  |%s  |", id, chid, ds, de);
 				addProvider(reader, cta_res + 19);
 			}
